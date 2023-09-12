@@ -20,12 +20,27 @@ class TodoApp extends StatelessWidget {
   }
 }
 
+class TodoItem {
+  final String name;
+  final String description;
+
+  TodoItem(this.name, this.description);
+}
+
 class ListPage extends StatelessWidget {
   const ListPage({super.key, required this.title});
   final String title;
 
   @override
   Widget build(BuildContext context) {
+    List<TodoItem> items = [
+      TodoItem('Klippa gräset', 'Trädgården och bakom skjulet'),
+      TodoItem('Köpa snus', 'Två stockar lös till pappa'),
+      TodoItem('Städa', 'Disk och tvätt innan sambon slutar'),
+      TodoItem('Parkera om bilen', 'Städdag på gatan tordag 20/9'),
+      TodoItem('Plugga', 'Gör modul 2 i flutterkursen'),
+      TodoItem('Skriv arg lapp', 'Grannen spelar hög musik varje kväll'),
+    ];
     return Scaffold(
         appBar: AppBar(
           centerTitle: true,
@@ -41,11 +56,10 @@ class ListPage extends StatelessWidget {
             })
           ],
         ),
-        body: Column(children: [
-          _item('Kostashios', 'Master Coder'),
-          _item('Sassa', 'Junior Coder'),
-          _item('Norén', 'Master UX'),
-        ]));
+        body: ListView(
+            children: items
+                .map((TodoItem) => _item(TodoItem.name, TodoItem.description))
+                .toList()));
   }
 
   Widget _item(String name, String role) {
@@ -55,11 +69,9 @@ class ListPage extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.all(10),
-            child: Container(
-              width: 50,
-              height: 50,
-              decoration:
-                  BoxDecoration(shape: BoxShape.circle, color: Colors.blue),
+            child: IconButton(
+              icon: Icon(Icons.check_box_outline_blank),
+              onPressed: () {},
             ),
           ),
           Expanded(
@@ -71,15 +83,18 @@ class ListPage extends StatelessWidget {
                 Text(
                   name,
                   style: TextStyle(
-                    fontSize: 25,
+                    fontSize: 20,
                   ),
                 ),
                 Text(role),
               ])),
           Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: Icon(Icons.chevron_right, size: 40),
-          ),
+              padding: EdgeInsets.only(right: 10),
+              child: IconButton(
+                //color: Colors.red,
+                icon: Icon(Icons.delete),
+                onPressed: () {},
+              )),
         ]);
   }
 }
