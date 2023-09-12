@@ -85,51 +85,29 @@ class AddPage extends StatelessWidget {
         actions: [],
       ),
       body: Center(
-          child: TextField(
-        decoration: InputDecoration(
-            border: OutlineInputBorder(), hintText: 'Enter your todo item'),
-      )),
-      floatingActionButton: ElevatedButton(
-        onPressed: () {
-          Navigator.pop(context);
-        },
-        child: const Text('Add item to your list'),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Container(
+              width: 300,
+              child: TextField(
+                decoration: InputDecoration(
+                  border: OutlineInputBorder(),
+                  labelText: 'Add item',
+                ),
+              ),
+            ),
+            Container(
+              height: 50,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: const Icon(Icons.add),
+              ),
+            )
+          ],
+        ),
       ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 }
-
-
-/*
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Add Item'),
-          actions: [
-            IconButton(
-              onPressed: () {},
-              icon: const Icon(Icons.menu),
-            ),
-          ],
-        ),
-        body: Center(
-            
-            child: TextField(
-          decoration: InputDecoration(
-              border: OutlineInputBorder(), hintText: 'Enter your todo item'),
-        )),
-        floatingActionButton: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('Go back'),
-        ));
-  }
-}
-
-*/
