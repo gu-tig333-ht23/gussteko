@@ -99,3 +99,37 @@ class AddPage extends StatelessWidget {
     );
   }
 }
+
+
+/*
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+          title: const Text('Add Item'),
+          actions: [
+            IconButton(
+              onPressed: () {},
+              icon: const Icon(Icons.menu),
+            ),
+          ],
+        ),
+        body: Center(
+            
+            child: TextField(
+          decoration: InputDecoration(
+              border: OutlineInputBorder(), hintText: 'Enter your todo item'),
+        )),
+        floatingActionButton: ElevatedButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+          child: const Text('Go back'),
+        ));
+  }
+}
+
+*/
