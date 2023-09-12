@@ -20,13 +20,17 @@ class TodoApp extends StatelessWidget {
   }
 }
 
+//Klassen TodoItem för varje elemetn i todo-listan
 class TodoItem {
   final String name;
   final String description;
+  bool done = false;
 
   TodoItem(this.name, this.description);
 }
 
+//Förstasidan där listan visas, builder för listan
+// och en knapp för att byta sida
 class ListPage extends StatelessWidget {
   const ListPage({super.key, required this.title});
   final String title;
@@ -56,10 +60,12 @@ class ListPage extends StatelessWidget {
             })
           ],
         ),
-        body: ListView(
-            children: items
-                .map((TodoItem) => _item(TodoItem.name, TodoItem.description))
-                .toList()),
+        body: ListView.builder(
+          itemBuilder: (context, index) {
+            return TodoListCreator(items[index]);
+          },
+          itemCount: items.length,
+        ),
         floatingActionButton: Container(
             height: 50,
             child: ElevatedButton(
@@ -72,12 +78,17 @@ class ListPage extends StatelessWidget {
               child: const Icon(Icons.add),
             )));
   }
+}
 
-  Widget _item(String name, String role) {
+// Skapar listan och listelement av todo:er
+class TodoListCreator extends StatelessWidget {
+  final TodoItem item;
+  TodoListCreator(this.item, {super.key});
+
+  @override
+  Widget build(BuildContext context) {
     return GestureDetector(
-      onTap: () {
-        print('hola $name');
-      },
+      onTap: () {},
       child: Row(
           mainAxisAlignment: MainAxisAlignment.start,
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -86,7 +97,9 @@ class ListPage extends StatelessWidget {
               padding: EdgeInsets.all(10),
               child: IconButton(
                 icon: Icon(Icons.check_box_outline_blank),
-                onPressed: () {},
+                onPressed: () {
+                  print('Checked');
+                },
               ),
             ),
             Expanded(
@@ -96,19 +109,21 @@ class ListPage extends StatelessWidget {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                   Text(
-                    name,
+                    item.name,
                     style: TextStyle(
                       fontSize: 20,
                     ),
                   ),
-                  Text(role),
+                  Text(item.description),
                 ])),
             Padding(
                 padding: EdgeInsets.only(right: 10),
                 child: IconButton(
                   //color: Colors.red,
                   icon: Icon(Icons.delete),
-                  onPressed: () {},
+                  onPressed: () {
+                    print('Delete');
+                  },
                 )),
           ]),
     );
