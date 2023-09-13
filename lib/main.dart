@@ -46,37 +46,39 @@ class ListPage extends StatelessWidget {
       TodoItem('Skriv arg lapp', 'Grannen spelar hög musik varje kväll'),
     ];
     return Scaffold(
-        appBar: AppBar(
-          centerTitle: true,
-          backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-          title: const Text('Todo List'),
-          actions: <Widget>[
-            PopupMenuButton(itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(child: Text('Alphabetical')),
-                PopupMenuItem(child: Text('Done')),
-                PopupMenuItem(child: Text('Not Done')),
-              ];
-            })
-          ],
-        ),
-        body: ListView.builder(
-          itemBuilder: (context, index) {
-            return TodoListCreator(items[index]);
+      appBar: AppBar(
+        centerTitle: true,
+        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        title: const Text('Todo List'),
+        actions: <Widget>[
+          PopupMenuButton(itemBuilder: (BuildContext context) {
+            return [
+              PopupMenuItem(child: Text('Alphabetical')),
+              PopupMenuItem(child: Text('Done')),
+              PopupMenuItem(child: Text('Not Done')),
+            ];
+          })
+        ],
+      ),
+      body: ListView.builder(
+        itemBuilder: (context, index) {
+          return TodoListCreator(items[index]);
+        },
+        itemCount: items.length,
+      ),
+      floatingActionButton: Container(
+        height: 50,
+        child: ElevatedButton(
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(builder: (context) => const AddPage()),
+            );
           },
-          itemCount: items.length,
+          child: const Icon(Icons.add),
         ),
-        floatingActionButton: Container(
-            height: 50,
-            child: ElevatedButton(
-              onPressed: () {
-                Navigator.push(
-                  context,
-                  MaterialPageRoute(builder: (context) => const AddPage()),
-                );
-              },
-              child: const Icon(Icons.add),
-            )));
+      ),
+    );
   }
 }
 
@@ -90,42 +92,44 @@ class TodoListCreator extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Padding(
-              padding: EdgeInsets.all(10),
-              child: IconButton(
-                icon: Icon(Icons.check_box_outline_blank),
-                onPressed: () {
-                  print('Checked');
-                },
-              ),
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Padding(
+            padding: EdgeInsets.all(10),
+            child: IconButton(
+              icon: Icon(Icons.check_box_outline_blank),
+              onPressed: () {
+                print('Checked');
+              },
             ),
-            Expanded(
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                  Text(
-                    item.name,
-                    style: TextStyle(
-                      fontSize: 20,
-                    ),
+          ),
+          Expanded(
+              child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                Text(
+                  item.name,
+                  style: TextStyle(
+                    fontSize: 20,
                   ),
-                  Text(item.description),
-                ])),
-            Padding(
-                padding: EdgeInsets.only(right: 10),
-                child: IconButton(
-                  //color: Colors.red,
-                  icon: Icon(Icons.delete),
-                  onPressed: () {
-                    print('Delete');
-                  },
-                )),
-          ]),
+                ),
+                Text(item.description),
+              ])),
+          Padding(
+            padding: EdgeInsets.only(right: 10),
+            child: IconButton(
+              //color: Colors.red,
+              icon: Icon(Icons.delete),
+              onPressed: () {
+                print('Delete');
+              },
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
