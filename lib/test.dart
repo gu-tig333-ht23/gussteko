@@ -160,7 +160,9 @@ class AddPage extends StatelessWidget {
             Container(
               height: 50,
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  print('Add item');
+                },
                 child: const Icon(Icons.add),
               ),
             )
