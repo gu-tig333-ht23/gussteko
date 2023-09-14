@@ -1,11 +1,37 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class MyState extends ChangeNotifier {
+  String _name = '';
+  String _description = '';
+  bool _done = false;
+
+  String get name => _name;
+  String get description => _description;
+  bool get done => _done;
+
+  void setName(String name) {
+    _name = name;
+    notifyListeners();
+  }
+
+  void setDescription(String description) {
+    _description = description;
+    notifyListeners();
+  }
+
+  void setDone(bool done) {
+    _done = done;
+    notifyListeners();
+  }
+}
 
 void main() {
-  runApp(const TodoApp());
+  runApp(TodoApp());
 }
 
 class TodoApp extends StatelessWidget {
-  const TodoApp({super.key});
+  TodoApp();
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -14,7 +40,7 @@ class TodoApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const ListPage(title: 'Todo Listpage'),
+      home: ListPage(title: 'Todo Listpage'),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -22,8 +48,8 @@ class TodoApp extends StatelessWidget {
 
 //Klassen TodoItem för varje elemetn i todo-listan
 class TodoItem {
-  final String name;
-  final String description;
+  String name;
+  String description;
   bool done = false;
 
   TodoItem(this.name, this.description);
@@ -32,7 +58,7 @@ class TodoItem {
 //Förstasidan där listan visas, builder för listan
 // och en knapp för att byta sida
 class ListPage extends StatelessWidget {
-  const ListPage({super.key, required this.title});
+  ListPage({super.key, required this.title});
   final String title;
 
   @override
@@ -51,13 +77,15 @@ class ListPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Todo List'),
         actions: <Widget>[
-          PopupMenuButton(itemBuilder: (BuildContext context) {
-            return [
-              PopupMenuItem(child: Text('Alphabetical')),
-              PopupMenuItem(child: Text('Done')),
-              PopupMenuItem(child: Text('Not Done')),
-            ];
-          })
+          PopupMenuButton(
+            itemBuilder: (BuildContext context) {
+              return [
+                PopupMenuItem(child: Text('Alphabetical')),
+                PopupMenuItem(child: Text('Done')),
+                PopupMenuItem(child: Text('Not Done')),
+              ];
+            },
+          )
         ],
       ),
       body: ListView.builder(
@@ -69,14 +97,15 @@ class ListPage extends StatelessWidget {
       floatingActionButton: Container(
         height: 50,
         child: ElevatedButton(
-          onPressed: () {
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => const AddPage()),
-            );
-          },
-          child: const Icon(Icons.add),
-        ),
+            onPressed: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => AddPage()),
+              );
+            },
+            child: Text('Add Item')
+            //child: const Icon(Icons.add),
+            ),
       ),
     );
   }
@@ -92,52 +121,48 @@ class TodoListCreator extends StatelessWidget {
     return GestureDetector(
       onTap: () {},
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: IconButton(
-              icon: Icon(Icons.check_box_outline_blank),
-              onPressed: () {
-                print('Checked');
-              },
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Padding(
+              padding: EdgeInsets.all(10),
+              child: IconButton(
+                icon: Icon(Icons.check_box_outline_blank),
+                onPressed: () {
+                  print('Checked');
+                },
+              ),
             ),
-          ),
-          Expanded(
-              child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                Text(
-                  item.name,
-                  style: TextStyle(
-                    fontSize: 20,
+            Expanded(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                  Text(
+                    item.name,
+                    style: TextStyle(
+                      fontSize: 20,
+                    ),
                   ),
-                ),
-                Text(item.description),
-              ])),
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: IconButton(
-              //color: Colors.red,
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                print('Delete');
-              },
-            ),
-          ),
-        ],
-      ),
+                  Text(item.description),
+                ])),
+            Padding(
+                padding: EdgeInsets.only(right: 10),
+                child: IconButton(
+                  //color: Colors.red,
+                  icon: Icon(Icons.delete),
+                  onPressed: () {
+                    print('Delete');
+                  },
+                )),
+          ]),
     );
   }
 }
 
 // Sida 2 där man fyller i items
 class AddPage extends StatelessWidget {
-  const AddPage({super.key});
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -159,13 +184,16 @@ class AddPage extends StatelessWidget {
                   border: OutlineInputBorder(),
                   labelText: 'Add item',
                 ),
+                onChanged: (text) {
+                  context.read<MyState>().setName(text);
+                },
               ),
             ),
             Container(
               height: 50,
               child: ElevatedButton(
                 onPressed: () {
-                  print('Add item');
+                  Navigator.pop(context);
                 },
                 child: const Icon(Icons.add),
               ),
