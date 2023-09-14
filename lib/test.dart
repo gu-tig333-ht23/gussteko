@@ -1,7 +1,26 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
+
+class MyState extends ChangeNotifier {
+  int _counter = 0;
+
+  int get counter => _counter;
+
+  void incrementCounter() {
+    _counter++;
+    notifyListeners();
+  }
+}
 
 void main() {
-  runApp(MyApp());
+  MyState state = MyState();
+
+  runApp(
+    ChangeNotifierProvider(
+      create: (context) => state,
+      child: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatelessWidget {
@@ -14,16 +33,11 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHome extends StatefulWidget {
-  @override
-  State<MyHome> createState() => _MyHomeState();
-}
-
-class _MyHomeState extends State<MyHome> {
-  int counter = 0;
-
+class MyHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var counter = context.watch<MyState>().counter;
+
     return Scaffold(
       appBar: AppBar(
         actions: [
@@ -33,11 +47,7 @@ class _MyHomeState extends State<MyHome> {
               Navigator.push(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => OtherView(counter, (value) {
-                    setState(() {
-                      counter = value;
-                    });
-                  }),
+                  builder: (context) => OtherView(),
                 ),
               );
             },
@@ -51,52 +61,28 @@ class _MyHomeState extends State<MyHome> {
       ),
       floatingActionButton: FloatingActionButton(
           onPressed: () {
-            setState(() {
-              counter++;
-            });
+            context.read<MyState>().incrementCounter();
           },
           child: Icon(Icons.add)),
     );
   }
 }
 
-class OtherView extends StatefulWidget {
-  int counter = 0;
-
-  void Function(int) onChange = (p0) {};
-
-  OtherView(this.counter, this.onChange);
-
-  @override
-  State<OtherView> createState() => _OtherViewState();
-}
-
-class _OtherViewState extends State<OtherView> {
-  int counter = 0;
-
-  @override
-  void initState() {
-    super.initState();
-
-    counter = widget.counter;
-  }
-
+class OtherView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    var counter = context.watch<MyState>().counter;
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
         title: const Text('Other View'),
       ),
       body: Center(
-        child: Text('Counter: $widget.counter'),
+        child: Text('Counter: $counter'),
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          setState(() {
-            counter++;
-          });
-          widget.onChange(counter);
+          context.read<MyState>().incrementCounter();
         },
         child: Icon(Icons.add),
       ),
