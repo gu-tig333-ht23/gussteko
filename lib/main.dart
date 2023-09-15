@@ -11,8 +11,8 @@ class MyState extends ChangeNotifier {
     TodoItem('To remove an item', 'Tap the bin to the right', false),
     TodoItem('To add a new item', 'Tap the button on your lower right', false),
   ];
-  bool _done = false;
 
+  bool _done = false;
   String get name => _name;
   String get description => _description;
   List<TodoItem> get items => _items;
@@ -135,10 +135,9 @@ class TodoListCreator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // Olika textstilar för att överstryka items som är klara
     TextStyle nameTextStyle;
     TextStyle descTextStyle;
-
-    // Olika textstilar för att överstryka items som är klara
     TextStyle nameDoneTextStyle =
         TextStyle(fontSize: 20, decoration: TextDecoration.lineThrough);
 
