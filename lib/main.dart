@@ -1,14 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+// Klass med changenotifier, variabler och funktioner för todo-listan
 class MyState extends ChangeNotifier {
   String _name = '';
   String _description = '';
   final List<TodoItem> _items = [
-    TodoItem('This is an example', 'Examples looks like this'),
-    TodoItem('To complete an item', 'Tap the checkbox to the left'),
-    TodoItem('To remove an item', 'Tap the bin to the right'),
-    TodoItem('To add a new item', 'Tap the button on your lower right'),
+    TodoItem('This is an example', 'Examples looks like this', false),
+    TodoItem('To complete an item', 'Tap the checkbox to the left', false),
+    TodoItem('To remove an item', 'Tap the bin to the right', false),
+    TodoItem('To add a new item', 'Tap the button on your lower right', false),
   ];
   bool _done = false;
 
@@ -32,8 +33,8 @@ class MyState extends ChangeNotifier {
     notifyListeners();
   }
 
-  void setDone(bool done) {
-    _done = done;
+  void setDone(int index, bool done) {
+    _items[index].done = done;
     notifyListeners();
   }
 
@@ -68,13 +69,13 @@ class TodoApp extends StatelessWidget {
   }
 }
 
-//Klassen TodoItem för varje elemetn i todo-listan
+//Klassen TodoItem för varje element i todo-listan
 class TodoItem {
   String name;
   String description;
   bool done = false;
 
-  TodoItem(this.name, this.description);
+  TodoItem(this.name, this.description, this.done);
 }
 
 //Förstasidan där listan visas, builder för listan
@@ -113,12 +114,12 @@ class ListPage extends StatelessWidget {
             onPressed: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => AddPage()),
+                MaterialPageRoute(
+                  builder: (context) => AddPage(),
+                ),
               );
             },
-            child: Text('Add Item')
-            //child: const Icon(Icons.add),
-            ),
+            child: Text('Add Item')),
       ),
     );
   }
@@ -141,12 +142,7 @@ class TodoListCreator extends StatelessWidget {
         children: [
           Padding(
             padding: EdgeInsets.all(10),
-            child: IconButton(
-              icon: Icon(Icons.check_box_outline_blank),
-              onPressed: () {
-                print('Checked');
-              },
-            ),
+            child: CheckBox(item, items),
           ),
           Expanded(
             child: Column(
@@ -160,7 +156,9 @@ class TodoListCreator extends StatelessWidget {
                     fontSize: 20,
                   ),
                 ),
-                Text(item.description),
+                Text(
+                  item.description,
+                ),
               ],
             ),
           ),
@@ -181,7 +179,28 @@ class TodoListCreator extends StatelessWidget {
   }
 }
 
-// Sida 2 där man fyller i items
+// Checkbox modell att byta mellan klar och inte klar
+class CheckBox extends StatelessWidget {
+  final TodoItem item;
+  final List<TodoItem> items;
+
+  CheckBox(this.item, this.items, {Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Checkbox(
+      checkColor: Colors.black,
+      activeColor: Colors.white,
+      value: item.done,
+      onChanged: (bool? value) {
+        int currentIndex = items.indexOf(item);
+        context.read<MyState>().setDone(currentIndex, value ?? false);
+      },
+    );
+  }
+}
+
+// Sida 2 där man fyller i nya items till todo-listan
 class AddPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -230,7 +249,8 @@ class AddPage extends StatelessWidget {
               child: ElevatedButton(
                 onPressed: () {
                   if (itemName != '') {
-                    TodoItem newItem = TodoItem(itemName, itemDescription);
+                    TodoItem newItem =
+                        TodoItem(itemName, itemDescription, false);
                     context.read<MyState>().addItem(newItem);
                     Navigator.pop(context);
                   }
