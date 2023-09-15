@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 class MyState extends ChangeNotifier {
   String _name = '';
   String _description = '';
+
+  // Ger listan ett par exempel och en guide för nya användare
   final List<TodoItem> _items = [
     TodoItem('This is an example', 'Examples looks like this', false),
     TodoItem('To complete an item', 'Tap the checkbox to the left', false),
@@ -18,6 +20,7 @@ class MyState extends ChangeNotifier {
   List<TodoItem> get items => _items;
   bool get done => _done;
 
+//funktioner
   void setName(String name) {
     _name = name;
     notifyListeners();
@@ -92,6 +95,7 @@ class ListPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Todo List'),
         actions: <Widget>[
+          //Knappen för att sortera OBS fungerar ej ännu
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
@@ -156,6 +160,7 @@ class TodoListCreator extends StatelessWidget {
       descTextStyle = descNotDoneTextStyle;
     }
 
+// Skapandet av varje listelement/todo-items
     return GestureDetector(
       onTap: () {},
       child: Row(
@@ -194,7 +199,7 @@ class TodoListCreator extends StatelessWidget {
   }
 }
 
-// Checkbox modell att byta mellan klar och inte klar
+// Checkbox modell för att byta mellan klar och inte klar
 class CheckBox extends StatelessWidget {
   final TodoItem item;
   final List<TodoItem> items;
@@ -259,6 +264,8 @@ class AddPage extends StatelessWidget {
               ),
             ),
             SizedBox(height: 20),
+            // Knapp som lägger till nya item i listan
+            // Om man inte namger itemet så händer inget men man kan skippa description
             Container(
               height: 50,
               child: ElevatedButton(
