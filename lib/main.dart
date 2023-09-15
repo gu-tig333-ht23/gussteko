@@ -95,6 +95,7 @@ class ListPage extends StatelessWidget {
           PopupMenuButton(
             itemBuilder: (BuildContext context) {
               return [
+                PopupMenuItem(child: Text('All')),
                 PopupMenuItem(child: Text('Done')),
                 PopupMenuItem(child: Text('Not Done')),
               ];
@@ -134,6 +135,28 @@ class TodoListCreator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    TextStyle nameTextStyle;
+    TextStyle descTextStyle;
+
+    // Olika textstilar för att överstryka items som är klara
+    TextStyle nameDoneTextStyle =
+        TextStyle(fontSize: 20, decoration: TextDecoration.lineThrough);
+
+    TextStyle nameNotDoneTextStyle = TextStyle(fontSize: 20);
+
+    TextStyle descDoneTextStyle =
+        TextStyle(decoration: TextDecoration.lineThrough);
+
+    TextStyle descNotDoneTextStyle = TextStyle();
+
+    if (item.done == true) {
+      nameTextStyle = nameDoneTextStyle;
+      descTextStyle = descDoneTextStyle;
+    } else {
+      nameTextStyle = nameNotDoneTextStyle;
+      descTextStyle = descNotDoneTextStyle;
+    }
+
     return GestureDetector(
       onTap: () {},
       child: Row(
@@ -150,15 +173,8 @@ class TodoListCreator extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
               children: [
-                Text(
-                  item.name,
-                  style: TextStyle(
-                    fontSize: 20,
-                  ),
-                ),
-                Text(
-                  item.description,
-                ),
+                Text(item.name, style: nameTextStyle),
+                Text(item.description, style: descTextStyle),
               ],
             ),
           ),
@@ -184,7 +200,7 @@ class CheckBox extends StatelessWidget {
   final TodoItem item;
   final List<TodoItem> items;
 
-  CheckBox(this.item, this.items, {Key? key}) : super(key: key);
+  CheckBox(this.item, this.items, {Key? key});
 
   @override
   Widget build(BuildContext context) {
