@@ -2,10 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:template/list_page.dart';
 
+enum Filter { showAll, showDone, showNotDone }
+
 // Klass med changenotifier, variabler och funktioner för todo-listan
 class MyState extends ChangeNotifier {
   String _name = '';
   String _description = '';
+  final bool _done = false;
+  Filter _filter = Filter.showAll;
 
   // Ger listan ett par exempel och en guide för nya användare
   final List<TodoItem> _items = [
@@ -15,11 +19,11 @@ class MyState extends ChangeNotifier {
     TodoItem('To add a new item', 'Tap the button on your lower right', false),
   ];
 
-  bool _done = false;
   String get name => _name;
   String get description => _description;
-  List<TodoItem> get items => _items;
   bool get done => _done;
+  List<TodoItem> get items => _items;
+  Filter get filter => _filter;
 
 //funktioner
   void setName(String name) {
@@ -44,6 +48,11 @@ class MyState extends ChangeNotifier {
 
   void deleteItem(int index) {
     _items.removeAt(index);
+    notifyListeners();
+  }
+
+  void setFilter(Filter option) {
+    _filter = option;
     notifyListeners();
   }
 }

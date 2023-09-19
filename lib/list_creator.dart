@@ -16,7 +16,9 @@ class TodoListCreator extends StatelessWidget {
     TextStyle nameDoneTextStyle =
         TextStyle(fontSize: 20, decoration: TextDecoration.lineThrough);
 
-    TextStyle nameNotDoneTextStyle = TextStyle(fontSize: 20);
+    TextStyle nameNotDoneTextStyle = TextStyle(
+      fontSize: 20,
+    );
 
     TextStyle descDoneTextStyle =
         TextStyle(decoration: TextDecoration.lineThrough);

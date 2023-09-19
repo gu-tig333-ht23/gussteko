@@ -11,6 +11,18 @@ class ListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     List<TodoItem> items = context.watch<MyState>().items;
+    Filter filterOption = context.watch<MyState>().filter;
+
+    List<TodoItem> filteredItems = [];
+
+    if (filterOption == Filter.showAll) {
+      filteredItems = items;
+    } else if (filterOption == Filter.showDone) {
+      filteredItems = items.where((item) => item.done).toList();
+    } else if (filterOption == Filter.showNotDone) {
+      filteredItems = items.where((item) => !item.done).toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         centerTitle: true,
@@ -18,12 +30,24 @@ class ListPage extends StatelessWidget {
         title: const Text('Todo List'),
         actions: <Widget>[
           //Knappen för att sortera OBS fungerar ej ännu
-          PopupMenuButton(
+          PopupMenuButton<Filter>(
+            onSelected: (Filter option) {
+              context.read<MyState>().setFilter(option);
+            },
             itemBuilder: (BuildContext context) {
               return [
-                PopupMenuItem(child: Text('All')),
-                PopupMenuItem(child: Text('Done')),
-                PopupMenuItem(child: Text('Not Done')),
+                PopupMenuItem<Filter>(
+                  value: Filter.showAll,
+                  child: Text('All'),
+                ),
+                PopupMenuItem<Filter>(
+                  value: Filter.showDone,
+                  child: Text('Done'),
+                ),
+                PopupMenuItem<Filter>(
+                  value: Filter.showNotDone,
+                  child: Text('Not Done'),
+                ),
               ];
             },
           )
@@ -31,9 +55,9 @@ class ListPage extends StatelessWidget {
       ),
       body: ListView.builder(
         itemBuilder: (context, index) {
-          return TodoListCreator(items[index], items);
+          return TodoListCreator(filteredItems[index], items);
         },
-        itemCount: items.length,
+        itemCount: filteredItems.length,
       ),
       floatingActionButton: Container(
         height: 50,
