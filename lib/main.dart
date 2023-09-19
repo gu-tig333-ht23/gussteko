@@ -1,10 +1,61 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:template/list_page.dart';
+import 'package:http/http.dart' as http;
+import 'package:template/api.dart';
+
+//////////////// API KEY f2b712e9-f98a-45db-b7c6-64d7ebad4140
+
+//   https://todoapp-api.apps.k8s.gu.se/
+
+//   Todo API
+// These are the end points for this API.
+
+// A todo has the following format:
+
+// {
+//   "id": "ca3084de-4424-4421-98af-0ae9e2cb3ee5",
+//   "title": "Must pack bags",
+//   "done": false
+// }
+// When creating a Todo you should not submit the id.
+// API key
+// All requests requires an API key. An API key uniquely identifies your Todo list. You can get an API key by using the /register endpoint.
+
+// GET /register
+// Get your API key
+
+// GET /todos?key=[YOUR API KEY]
+// List todos.
+
+// Will return an array of todos.
+
+// POST /todos?key=[YOUR API KEY]
+// Add todo.
+
+// Takes a Todo as payload (body). Remember to set the Content-Type header to application/json.
+
+// Will return the entire list of todos, including the added Todo, when successful.
+
+// PUT /todos/:id?key=[YOUR API KEY]
+// Update todo with :id
+
+// Takes a Todo as payload (body), and updates title and done for the already existing Todo with id in URL.
+
+// DELETE /todos/:id?key=[YOUR API KEY]
+// Deletes a Todo with id in URL
+
+enum Filter { showAll, showDone, showNotDone }
 
 // Klass med changenotifier, variabler och funktioner för todo-listan
 class MyState extends ChangeNotifier {
   String _name = '';
   String _description = '';
+  final bool _done = false;
+  Filter _filter = Filter.showAll;
+  List<Note> _notes = [];
+
+  // Ger listan ett par exempel och en guide för nya användare
   final List<TodoItem> _items = [
     TodoItem('This is an example', 'Examples looks like this', false),
     TodoItem('To complete an item', 'Tap the checkbox to the left', false),
@@ -12,12 +63,14 @@ class MyState extends ChangeNotifier {
     TodoItem('To add a new item', 'Tap the button on your lower right', false),
   ];
 
-  bool _done = false;
   String get name => _name;
   String get description => _description;
-  List<TodoItem> get items => _items;
   bool get done => _done;
+  List<TodoItem> get items => _items;
+  Filter get filter => _filter;
+  List<Note> get notes => _notes;
 
+//funktioner
   void setName(String name) {
     _name = name;
     notifyListeners();
@@ -42,9 +95,23 @@ class MyState extends ChangeNotifier {
     _items.removeAt(index);
     notifyListeners();
   }
+
+  void setFilter(Filter option) {
+    _filter = option;
+    notifyListeners();
+  }
+
+  void fetchNotes() async {
+    var notes = await getNotes();
+    _notes = notes;
+    notifyListeners();
+  }
 }
 
 void main() {
+  // MyState state = MyState();
+  // state.fetchNotes();
+
   runApp(
     ChangeNotifierProvider(
       create: (context) => MyState(),
@@ -78,204 +145,5 @@ class TodoItem {
   TodoItem(this.name, this.description, this.done);
 }
 
-//Förstasidan där listan visas, builder för listan
-class ListPage extends StatelessWidget {
-  ListPage({super.key, required this.title});
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    List<TodoItem> items = context.watch<MyState>().items;
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Todo List'),
-        actions: <Widget>[
-          PopupMenuButton(
-            itemBuilder: (BuildContext context) {
-              return [
-                PopupMenuItem(child: Text('All')),
-                PopupMenuItem(child: Text('Done')),
-                PopupMenuItem(child: Text('Not Done')),
-              ];
-            },
-          )
-        ],
-      ),
-      body: ListView.builder(
-        itemBuilder: (context, index) {
-          return TodoListCreator(items[index], items);
-        },
-        itemCount: items.length,
-      ),
-      floatingActionButton: Container(
-        height: 50,
-        child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPage(),
-                ),
-              );
-            },
-            child: Text('Add Item')),
-      ),
-    );
-  }
-}
-
 // Skapar listan och listelement av todo:er
-class TodoListCreator extends StatelessWidget {
-  final TodoItem item;
-  final List<TodoItem> items;
 
-  TodoListCreator(this.item, this.items, {super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    // Olika textstilar för att överstryka items som är klara
-    TextStyle nameTextStyle;
-    TextStyle descTextStyle;
-    TextStyle nameDoneTextStyle =
-        TextStyle(fontSize: 20, decoration: TextDecoration.lineThrough);
-
-    TextStyle nameNotDoneTextStyle = TextStyle(fontSize: 20);
-
-    TextStyle descDoneTextStyle =
-        TextStyle(decoration: TextDecoration.lineThrough);
-
-    TextStyle descNotDoneTextStyle = TextStyle();
-
-    if (item.done == true) {
-      nameTextStyle = nameDoneTextStyle;
-      descTextStyle = descDoneTextStyle;
-    } else {
-      nameTextStyle = nameNotDoneTextStyle;
-      descTextStyle = descNotDoneTextStyle;
-    }
-
-    return GestureDetector(
-      onTap: () {},
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        crossAxisAlignment: CrossAxisAlignment.center,
-        children: [
-          Padding(
-            padding: EdgeInsets.all(10),
-            child: CheckBox(item, items),
-          ),
-          Expanded(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(item.name, style: nameTextStyle),
-                Text(item.description, style: descTextStyle),
-              ],
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.only(right: 10),
-            child: IconButton(
-              //color: Colors.red,
-              icon: Icon(Icons.delete),
-              onPressed: () {
-                int currentIndex = items.indexOf(item);
-                context.read<MyState>().deleteItem(currentIndex);
-              },
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Checkbox modell att byta mellan klar och inte klar
-class CheckBox extends StatelessWidget {
-  final TodoItem item;
-  final List<TodoItem> items;
-
-  CheckBox(this.item, this.items, {Key? key});
-
-  @override
-  Widget build(BuildContext context) {
-    return Checkbox(
-      checkColor: Colors.black,
-      activeColor: Colors.white,
-      value: item.done,
-      onChanged: (bool? value) {
-        int currentIndex = items.indexOf(item);
-        context.read<MyState>().setDone(currentIndex, value ?? false);
-      },
-    );
-  }
-}
-
-// Sida 2 där man fyller i nya items till todo-listan
-class AddPage extends StatelessWidget {
-  @override
-  Widget build(BuildContext context) {
-    String itemName = '';
-    String itemDescription = '';
-    return Scaffold(
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Theme.of(context).colorScheme.inversePrimary,
-        title: const Text('Add Item'),
-        actions: [],
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
-          children: [
-            Container(
-              width: 300,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Item Name',
-                ),
-                onChanged: (text) {
-                  itemName = text;
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              width: 300,
-              child: TextField(
-                decoration: InputDecoration(
-                  border: OutlineInputBorder(),
-                  labelText: 'Item Description',
-                ),
-                onChanged: (text) {
-                  itemDescription = text;
-                },
-              ),
-            ),
-            SizedBox(height: 20),
-            Container(
-              height: 50,
-              child: ElevatedButton(
-                onPressed: () {
-                  if (itemName != '') {
-                    TodoItem newItem =
-                        TodoItem(itemName, itemDescription, false);
-                    context.read<MyState>().addItem(newItem);
-                    Navigator.pop(context);
-                  }
-                },
-                child: const Text('Add Item'),
-              ),
-            )
-          ],
-        ),
-      ),
-    );
-  }
-}
