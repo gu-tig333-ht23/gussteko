@@ -10,9 +10,12 @@ class TodoListCreator extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    var notes = context.watch<MyState>().notes;
+
     // Olika textstilar för att överstryka items som är klara
     TextStyle nameTextStyle;
     TextStyle descTextStyle;
+
     TextStyle nameDoneTextStyle =
         TextStyle(fontSize: 20, decoration: TextDecoration.lineThrough);
 

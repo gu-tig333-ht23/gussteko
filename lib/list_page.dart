@@ -29,7 +29,7 @@ class ListPage extends StatelessWidget {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: const Text('Todo List'),
         actions: <Widget>[
-          //Knappen för att sortera OBS fungerar ej ännu
+          //Knappen för att sortera
           PopupMenuButton<Filter>(
             onSelected: (Filter option) {
               context.read<MyState>().setFilter(option);
@@ -62,15 +62,16 @@ class ListPage extends StatelessWidget {
       floatingActionButton: Container(
         height: 50,
         child: ElevatedButton(
-            onPressed: () {
-              Navigator.push(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => AddPage(),
-                ),
-              );
-            },
-            child: Text('Add Item')),
+          onPressed: () {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => AddPage(),
+              ),
+            );
+          },
+          child: Text('Add Item'),
+        ),
       ),
     );
   }
