@@ -37,13 +37,9 @@ class NoteWidget extends StatelessWidget {
             context.read<MyState>().fetchNotes();
           },
         ),
-        onTap: () {
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => NoteView(note),
-            ),
-          );
+        onTap: () async {
+          await switchDone(note);
+          context.read<MyState>().fetchNotes();
         },
         title: Text(note.title, style: nameTextStyle),
         trailing: IconButton(

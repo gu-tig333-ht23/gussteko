@@ -3,8 +3,15 @@ import 'package:provider/provider.dart';
 import 'package:template/api.dart';
 import 'package:template/main.dart';
 
-class AddNoteView extends StatelessWidget {
+class AddNoteView extends StatefulWidget {
+  @override
+  State<AddNoteView> createState() => _AddNoteViewState();
+}
+
+class _AddNoteViewState extends State<AddNoteView> {
   final TextEditingController titleController = TextEditingController();
+
+  String noTitleWarning = '';
 
   @override
   Widget build(BuildContext context) {
@@ -21,6 +28,10 @@ class AddNoteView extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
+            Padding(
+              padding: const EdgeInsets.all(20.0),
+              child: Text(noTitleWarning, style: TextStyle(fontSize: 15)),
+            ),
             TextField(
               controller: titleController,
               decoration: const InputDecoration(
@@ -34,11 +45,19 @@ class AddNoteView extends StatelessWidget {
                 onPressed: () async {
                   var title = titleController.text;
                   bool done = false;
+
                   if (title != '') {
                     Note note = Note(null, title, done);
                     await addNote(note);
+                    noTitleWarning = '';
                     context.read<MyState>().fetchNotes();
                     Navigator.pop(context);
+                  } else {
+                    setState(
+                      () {
+                        noTitleWarning = 'Please enter a title';
+                      },
+                    );
                   }
                 },
                 child: Text('Add note'),

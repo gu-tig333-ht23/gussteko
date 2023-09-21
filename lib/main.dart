@@ -116,21 +116,3 @@ class MyHome extends StatelessWidget {
     );
   }
 }
-
-class NoteView extends StatelessWidget {
-  final Note note;
-
-  NoteView(this.note);
-
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(note.title),
-      ),
-      body: Center(
-        child: Text(note.title),
-      ),
-    );
-  }
-}
