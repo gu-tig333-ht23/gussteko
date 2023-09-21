@@ -27,6 +27,7 @@ class Note {
   }
 }
 
+//Funktion för att hämta alla notes
 Future<List<Note>> getNotes() async {
   http.Response response =
       await http.get(Uri.parse('$endPoint/todos?key=$apiKey'));
@@ -35,6 +36,7 @@ Future<List<Note>> getNotes() async {
   return jsonResponse.map((json) => Note.fromJson(json)).toList();
 }
 
+//Funktion för att lägga till en note
 Future<void> addNote(Note note) async {
   await http.post(
     Uri.parse('$endPoint/todos?key=$apiKey'),
@@ -43,6 +45,7 @@ Future<void> addNote(Note note) async {
   );
 }
 
+//Uppdateringsfunktionen som egentligen bara byter mellan done och not done
 Future<void> switchDone(Note note) async {
   String id = note.id!;
   note.done = !note.done;
@@ -53,10 +56,11 @@ Future<void> switchDone(Note note) async {
   );
 }
 
+//Funktion för att ta bort en note
 Future<void> deleteNote(Note note) async {
   String id = note.id!;
   await http.delete(
-    Uri.parse('$endPoint/todos/$id?key=36cfd381-9237-476e-ae2f-05ac73116424'),
+    Uri.parse('$endPoint/todos/$id?key=$apiKey'),
     headers: {'Content-Type': 'application/json'},
     body: jsonEncode(note.toJson()),
   );
