@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:template/Note.dart';
 import 'package:template/api.dart';
 import 'package:template/main.dart';
 
