@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './api.dart';
-import './AddNoteView.dart';
-import './NoteWidget.dart';
+import 'Note.dart';
+import 'add_note_view.dart';
+import 'note_widget.dart';
 
+//För att kunna toggla filter
 enum Filter {
   all,
   completed,
@@ -66,6 +68,8 @@ class MyHome extends StatelessWidget {
     var notes = context.watch<MyState>().notes;
     var state = context.watch<MyState>();
 
+// Filterfunktionalitet
+
     var filteredNotes = notes.where((note) {
       if (state.filter == Filter.all) {
         return true;
@@ -86,6 +90,7 @@ class MyHome extends StatelessWidget {
             onSelected: (filter) {
               state.filter = filter;
             },
+//Filterfunktionalitet
             itemBuilder: (BuildContext context) {
               return Filter.values.map(
                 (filter) {
@@ -99,6 +104,8 @@ class MyHome extends StatelessWidget {
           ),
         ],
       ),
+
+//Skapar listan med alla notes
       body: ListView(
         children: filteredNotes.map((note) => NoteWidget(note)).toList(),
       ),

@@ -10,8 +10,8 @@ class NoteWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // Två olika textstilar beroende på om noten är klar eller inte
-    // Skapar en överstruken text om noten är klarmarkerad
+// Två olika textstilar beroende på om noten är klar eller inte,
+// skapar en överstruken text om noten är klarmarkerad
     TextStyle nameTextStyle;
     TextStyle nameDoneTextStyle = const TextStyle(
       fontSize: 20,
@@ -28,6 +28,8 @@ class NoteWidget extends StatelessWidget {
     }
 
     return ListTile(
+
+// Checkboxen som byter mellan done och not done en note
         leading: Checkbox(
           checkColor: Colors.black,
           activeColor: Colors.white,
@@ -37,10 +39,14 @@ class NoteWidget extends StatelessWidget {
             context.read<MyState>().fetchNotes();
           },
         ),
+
+// Klickar man på själva noten byter den också mellan done och not done
         onTap: () async {
           await switchDone(note);
           context.read<MyState>().fetchNotes();
         },
+
+// Själva noten med text och en deleteknapp
         title: Text(note.title, style: nameTextStyle),
         trailing: IconButton(
           icon: Icon(Icons.delete),
