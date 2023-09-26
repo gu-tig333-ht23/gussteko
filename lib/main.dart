@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import './api.dart';
-import './AddNoteView.dart';
-import './NoteWidget.dart';
+import 'Note.dart';
+import 'add_note_view.dart';
+import 'note_widget.dart';
 
 //För att kunna toggla filter
 enum Filter {
